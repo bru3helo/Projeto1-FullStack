@@ -21,5 +21,19 @@
     <link rel="stylesheet" href="style.css" />
     <title>Document</title>
 </head>
-
 </html>
+<script>
+    const button = document.querySelector('button');
+    const ul = document.querySelector('ul');
+
+    button.addEventListener('click', () => {
+        fetch("https://www.dnd5eapi.co/api/monsters").then((res) => res.json()).then((data) => {
+            console.log(data);
+            for(i in data.results){
+                const li = document.createElement('li');
+                li.innerHTML = data.results[i].name;
+                ul.appendChild(li);
+            }
+        })
+ });
+</script>
