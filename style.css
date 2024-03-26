@@ -66,21 +66,20 @@ h1 {
     border: 1px solid #ccc;
     border-radius: 4px;
     max-height: 200px;
-    /*Tem que lembrar que esse overflow permite que rolle para baixo, então sempre quiser use isso */
     overflow-y: auto;
     background-color: #fff;
-    /* Como estamos utilizando o LI, para remover aqueles pontos que fica lá, podemos utilizar isso aqui*/
+
     list-style-type: none;
     padding: 0;
   }
   
   #monsterResult li {
     padding: 10px;
-    /*Basicamente muda o cursos quando passa por cima */
+
     cursor: pointer;
   }
   
   #monsterResult li:hover {
-    /* Hover funciona junto com o pointer, pois ele muda a forma que é visualizada o elemento quando passa por cima*/
+ 
     background-color: #f5f5f5;
   }
