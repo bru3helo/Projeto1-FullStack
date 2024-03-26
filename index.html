@@ -7,12 +7,11 @@
 </head>
 <body>
     <body>
-        <button>Clique aqui para consultar a lista de monstros</button>
-        <ul></ul>
         <div class="container">
           <h1>Monster Search</h1>
           <input type="text" id="monsterInput" placeholder="Enter a monster name" />
           <button id="searchButton">Search</button>
+          <ul id="suggestions"></ul>
           <div id="monsterResult" class="monster-result"></div>
           <ul id="monster_result"></ul>
         </div>
@@ -23,19 +22,41 @@
 </head>
 </html>
 <script>
-    const button = document.querySelector('button');
-    const ul = document.querySelector('ul');
+const monsterInput2 = document.getElementById("monsterInput");
+const suggestions = document.getElementById("suggestions");
 
-    button.addEventListener('click', () => {
-        fetch("https://www.dnd5eapi.co/api/monsters").then((res) => res.json()).then((data) => {
-            console.log(data);
-            for(i in data.results){
-                const li = document.createElement('li');
-                li.innerHTML = data.results[i].name;
-                ul.appendChild(li);
-            }
-        })
- });
+monsterInput2.addEventListener("input", () => {
+  const monsterName = monsterInput2.value.toLowerCase();
+  if (monsterName) {
+    fetchSuggestions(monsterName);
+  } else {
+    suggestions.innerHTML = ""; // Limpa as sugestões se o campo de entrada estiver vazio
+  }
+});
+
+function fetchSuggestions(monsterName) {
+  fetch("https://www.dnd5eapi.co/api/monsters")
+    .then((res) => res.json())
+    .then((data) => {
+      const filteredMonsters = data.results.filter((monster) =>
+        monster.name.toLowerCase().startsWith(monsterName)
+      );
+      displaySuggestions(filteredMonsters);
+    })
+    .catch((error) => {
+      console.error("Ocorreu um erro:", error);
+    });
+}
+
+function displaySuggestions(monsters) {
+  suggestions.innerHTML = ""; // Limpa as sugestões anteriores
+  monsters.forEach((monster) => {
+    const li = document.createElement("li");
+    li.textContent = monster.name;
+    suggestions.appendChild(li);
+  });
+}
+
 </script>
 <script>
 const monsterInput = document.getElementById("monsterInput");
@@ -59,9 +80,15 @@ function searchMonster(monsterName) {
       if (data.error) {
         monsterResult.innerHTML = "Monstro não encontrado.";
       } else {
-        monsterResult.innerHTML = ""
         const ul = document.querySelector('#monster_result');
+        ul.innerHTML = ""; // Limpa os resultados anteriores
+        monsterResult.innerHTML = ""
+        const imageMonster = document.createElement('img');
+        imageMonster.src = `https://www.dnd5eapi.co/api/images/monsters/${monsterName}.png`; // URL da imagem
+        imageMonster.alt = data.name;
+        imageMonster.classList.add('monster-image');
         const nome = document.createElement('li');
+        ul.appendChild(imageMonster);
         const tipo = document.createElement('li');
         const tamanho = document.createElement('li');
         const alinhamento = document.createElement('li');
@@ -81,7 +108,7 @@ function searchMonster(monsterName) {
     .catch((error) => {
       monsterResult.innerHTML = "Ocorreu um erro.";
     });
-
 }
+
 
 </script>

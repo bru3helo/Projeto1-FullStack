@@ -1,5 +1,3 @@
-AddType text/css .css
-
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
@@ -12,23 +10,35 @@ body {
 }
 
 .container {
-    background-color: white;
+    position: relative;
+    background-color: #fafafa; /* Cor de fundo mais suave */
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra mais suave */
     text-align: center;
+    width: 80%; /* Largura maior para acomodar mais conteúdo */
+    max-width: 600px; /* Largura máxima para evitar que fique muito grande em telas grandes */
 }
 
 h1 {
     color: #333;
+    font-size: 2em; /* Tamanho de fonte maior */
+    margin-bottom: 20px; /* Espaçamento abaixo do título */
+}
+
+.search-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%; /* Usa toda a largura disponível */
+    margin-bottom: 20px; /* Espaçamento abaixo do container de pesquisa */
 }
 
 #monsterInput {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
+    flex-grow: 1;
+    margin-right: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    padding: 10px; /* Padding maior para melhorar a sensação */
 }
 
 #searchButton {
@@ -36,8 +46,9 @@ h1 {
     color: white;
     border: none;
     border-radius: 4px;
-    padding: 8px 12px;
+    padding: 10px 20px; /* Padding maior para melhorar a sensação */
     cursor: pointer;
+    font-size: 1em; /* Tamanho de fonte maior */
 }
 
 .monster-result {
@@ -46,6 +57,7 @@ h1 {
     border: 1px solid #ccc;
     border-radius: 4px;
     text-align: left;
+    background-color: #fafafa; /* Cor de fundo mais suave */
 }
 
 .monster-result ul {
@@ -55,8 +67,40 @@ h1 {
 
 .monster-result li {
     padding: 5px 0;
+    font-size: 1em; /* Tamanho de fonte maior */
 }
 
 .monster-result span {
     font-weight: bold;
 }
+
+#suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    border: 1px solid #ccc;
+    background: white;
+    z-index: 99;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+#suggestions li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+#suggestions li:hover {
+    background: #ddd;
+}
+.monster-image {
+    width: 400px;
+    height: 250px; 
+    object-fit: fill; 
+}
+
+#monster_result li {
+    list-style-type: none;
+}
+
