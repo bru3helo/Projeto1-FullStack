@@ -13,6 +13,9 @@
           <input type="text" id="monsterInput" placeholder="Enter a monster name"/>
           <p></p>
           <button id="searchButton">Search</button>
+          <ul id="suggestions"></ul>
+          <div id="monsterResult" class="monster-result"></div>
+          <ul id="monster_result"></ul>
           <div id="searchResult" class="search-result"></div>
           <ul id="monsterResult"></ul>
         </div>
@@ -23,6 +26,46 @@
 </head>
 </html>
 <script>
+const monsterInput2 = document.getElementById("monsterInput");
+const suggestions = document.getElementById("suggestions");
+
+monsterInput2.addEventListener("input", () => {
+  const monsterName = monsterInput2.value.toLowerCase();
+  if (monsterName) {
+    fetchSuggestions(monsterName);
+  } else {
+    suggestions.innerHTML = ""; // Limpa as sugestões se o campo de entrada estiver vazio
+  }
+});
+
+function fetchSuggestions(monsterName) {
+  fetch("https://www.dnd5eapi.co/api/monsters")
+    .then((res) => res.json())
+    .then((data) => {
+      const filteredMonsters = data.results.filter((monster) =>
+        monster.name.toLowerCase().startsWith(monsterName)
+      );
+      displaySuggestions(filteredMonsters);
+    })
+    .catch((error) => {
+      console.error("Ocorreu um erro:", error);
+    });
+}
+
+function displaySuggestions(monsters) {
+  suggestions.innerHTML = ""; // Limpa as sugestões anteriores
+  monsters.forEach((monster) => {
+    const li = document.createElement("li");
+    li.textContent = monster.name;
+    suggestions.appendChild(li);
+  });
+}
+
+</script>
+<script>
+const monsterInput = document.getElementById("monsterInput");
+const searchButton = document.getElementById("searchButton");
+const monsterResult = document.getElementById("monsterResult");
   const input = document.getElementById('monsterInput');
   const ul = document.querySelector('#monsterResult');
   const p = document.querySelector('p');
@@ -90,6 +133,45 @@
       searchResult.innerHTML = "Por favor, insira o nome de um monstro.";
     }
   });
+
+function searchMonster(monsterName) {
+  monsterResult.innerHTML = "Procurando...";
+  fetch(`https://www.dnd5eapi.co/api/monsters/${monsterName}`)
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.error) {
+        monsterResult.innerHTML = "Monstro não encontrado.";
+      } else {
+        const ul = document.querySelector('#monster_result');
+        ul.innerHTML = ""; // Limpa os resultados anteriores
+        monsterResult.innerHTML = ""
+        const imageMonster = document.createElement('img');
+        imageMonster.src = `https://www.dnd5eapi.co/api/images/monsters/${monsterName}.png`; // URL da imagem
+        imageMonster.alt = data.name;
+        imageMonster.classList.add('monster-image');
+        const nome = document.createElement('li');
+        ul.appendChild(imageMonster);
+        const tipo = document.createElement('li');
+        const tamanho = document.createElement('li');
+        const alinhamento = document.createElement('li');
+        const idiomas = document.createElement('li');
+        nome.innerHTML = `Nome: ${data.name}`;
+        tipo.innerHTML = `Tipo: ${data.type}`;
+        tamanho.innerHTML = `Tamanho: ${data.size}`;
+        alinhamento.innerHTML = `Alinhamento: ${data.alignment}`;
+        idiomas.innerHTML = `Idiomas: ${data.languages}`;
+        ul.appendChild(nome);
+        ul.appendChild(tipo); 
+        ul.appendChild(tamanho);
+        ul.appendChild(alinhamento);
+        ul.appendChild(idiomas);
+      }
+    })
+    .catch((error) => {
+      monsterResult.innerHTML = "Ocorreu um erro.";
+    });
+}
+
 
   function searchMonster(monsterName) {
     searchResult.innerHTML = "Procurando...";
