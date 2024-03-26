@@ -11,7 +11,7 @@
         <ul></ul>
         <div class="container">
           <h1>Monster Search</h1>
-          <input type="text" id="monsterInput" placeholder="Enter a monster name" />
+          input type="text" id="monsterInput" placeholder="Enter a monster name" />
           <button id="searchButton">Search</button>
           <div id="monsterResult" class="monster-result"></div>
           <ul id="monster_result"></ul>
@@ -72,7 +72,5 @@ function searchMonster(monsterName) {
     .catch((error) => {
       monsterResult.innerHTML = "Ocorreu um erro.";
     });
-
-}
-
+} 
 </script>
