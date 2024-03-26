@@ -14,6 +14,7 @@
           <input type="text" id="monsterInput" placeholder="Enter a monster name" />
           <button id="searchButton">Search</button>
           <div id="monsterResult" class="monster-result"></div>
+          <ul id="monster_result"></ul>
         </div>
     </body>
     </html>
@@ -46,24 +47,31 @@ searchButton.addEventListener("click", () => {
   if (monsterName) {
     searchMonster(monsterName);
   } else {
-    monsterResult.innerHTML = "Please enter a monster name.";
+    monsterResult.innerHTML = "Por favor, insira o nome de um monstro.";
   }
 });
 
 function searchMonster(monsterName) {
-  monsterResult.innerHTML = "Searching...";
+  monsterResult.innerHTML = "Procurando...";
   fetch(`https://www.dnd5eapi.co/api/monsters/${monsterName}`)
     .then((res) => res.json())
     .then((data) => {
       if (data.error) {
-        monsterResult.innerHTML = "Monster not found.";
+        monsterResult.innerHTML = "Monstro não encontrado.";
       } else {
-        monsterResult.innerHTML = JSON.stringify(data, null, 2);
+        monsterResult.innerHTML = ""
+        const ul = document.querySelector('#monster_result');
+        const nome = document.createElement('li');
+        const tipo = document.createElement('li');
+        nome.innerHTML = `Nome: ${data.name}`;
+        tipo.innerHTML = `Tipo: ${data.type}`;
+        ul.appendChild(nome);
+        ul.appendChild(tipo);
       }
     })
     .catch((error) => {
-      monsterResult.innerHTML = "An error occurred.";
+      monsterResult.innerHTML = "Ocorreu um erro.";
     });
+
 }
 </script>
-
