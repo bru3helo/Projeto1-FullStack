@@ -60,3 +60,23 @@ h1 {
 .monster-result span {
     font-weight: bold;
 }
+
+#monsterResult {
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #fff;
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  #monsterResult li {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  #monsterResult li:hover {
+    background-color: #f5f5f5;
+  }

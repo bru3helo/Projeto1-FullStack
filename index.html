@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <title>Document</title>
 </head>
 <body>
     <body>
-        <button>Clique aqui para consultar a lista de monstros</button>
-        <ul></ul>
         <div class="container">
           <h1>Monster Search</h1>
-          <input type="text" id="monsterInput" placeholder="Enter a monster name" />
+          <input type="text" id="monsterInput" placeholder="Enter a monster name"/>
+          <p></p>
           <button id="searchButton">Search</button>
-          <div id="monsterResult" class="monster-result"></div>
-          <ul id="monster_result"></ul>
+          <div id="searchResult" class="search-result"></div>
+          <ul id="monsterResult"></ul>
         </div>
     </body>
     </html>
@@ -23,65 +23,106 @@
 </head>
 </html>
 <script>
-    const button = document.querySelector('button');
-    const ul = document.querySelector('ul');
+  const input = document.getElementById('monsterInput');
+  const ul = document.querySelector('#monsterResult');
+  const p = document.querySelector('p');
+  
+  let monsters = [];
 
-    button.addEventListener('click', () => {
-        fetch("https://www.dnd5eapi.co/api/monsters").then((res) => res.json()).then((data) => {
-            console.log(data);
-            for(i in data.results){
-                const li = document.createElement('li');
-                li.innerHTML = data.results[i].name;
-                ul.appendChild(li);
-            }
-        })
- });
-</script>
-<script>
-const monsterInput = document.getElementById("monsterInput");
-const searchButton = document.getElementById("searchButton");
-const monsterResult = document.getElementById("monsterResult");
-
-searchButton.addEventListener("click", () => {
-  const monsterName = monsterInput.value.toLowerCase();
-  if (monsterName) {
-    searchMonster(monsterName);
-  } else {
-    monsterResult.innerHTML = "Por favor, insira o nome de um monstro.";
-  }
-});
-
-function searchMonster(monsterName) {
-  monsterResult.innerHTML = "Procurando...";
-  fetch(`https://www.dnd5eapi.co/api/monsters/${monsterName}`)
+  fetch("https://www.dnd5eapi.co/api/monsters")
     .then((res) => res.json())
     .then((data) => {
-      if (data.error) {
-        monsterResult.innerHTML = "Monstro não encontrado.";
-      } else {
-        monsterResult.innerHTML = ""
-        const ul = document.querySelector('#monster_result');
-        const nome = document.createElement('li');
-        const tipo = document.createElement('li');
-        const tamanho = document.createElement('li');
-        const alinhamento = document.createElement('li');
-        const idiomas = document.createElement('li');
-        nome.innerHTML = `Nome: ${data.name}`;
-        tipo.innerHTML = `Tipo: ${data.type}`;
-        tamanho.innerHTML = `Tamanho: ${data.size}`;
-        alinhamento.innerHTML = `Alinhamento: ${data.alignment}`;
-        idiomas.innerHTML = `Idiomas: ${data.languages}`;
-        ul.appendChild(nome);
-        ul.appendChild(tipo); 
-        ul.appendChild(tamanho);
-        ul.appendChild(alinhamento);
-        ul.appendChild(idiomas);
-      }
-    })
-    .catch((error) => {
-      monsterResult.innerHTML = "Ocorreu um erro.";
+      monsters = data.results.map((monster) => monster.name);
+      autoComplete(monsters);
     });
 
-}
 
+  function autoComplete(monsters) {
+    input.addEventListener("input", () => {
+
+      const inputValue = input.value.toLowerCase();
+
+      while (ul.firstChild) {
+        ul.removeChild(ul.firstChild);
+      }
+
+      if (!inputValue) return;
+
+      const autocomplete = monsters.filter((monster) =>
+        monster.toLowerCase().startsWith(inputValue)
+      );
+
+      autocomplete.forEach((name) => {
+        const li = document.createElement('li');
+        li.textContent = name;
+        ul.appendChild(li);
+      });
+
+      ul.style.display = 'block';
+
+      searchResult.innerHTML = "";
+    });
+
+    input.addEventListener('blur', () => {
+      setTimeout(() => {
+        ul.style.display = 'none';
+      }, 200);
+    });
+
+    ul.addEventListener('click', (event) => {
+      if (event.target.tagName === 'LI') {
+        input.value = event.target.textContent;
+        ul.style.display = 'none';
+      }
+    });
+  }
+
+  const monsterInput = document.getElementById("monsterInput");
+  const searchButton = document.getElementById("searchButton");
+  const searchResult = document.getElementById("searchResult");
+
+  searchButton.addEventListener("click", () => {
+    const monsterName = monsterInput.value.toLowerCase();
+    if (monsterName) {
+      searchMonster(monsterName);
+      input.value= ""
+    } else {
+      searchResult.innerHTML = "Por favor, insira o nome de um monstro.";
+    }
+  });
+
+  function searchMonster(monsterName) {
+    searchResult.innerHTML = "Procurando...";
+    const monsterNameComEspaco = monsterName.replace(/ /g, "-")
+    fetch(`https://www.dnd5eapi.co/api/monsters/${monsterNameComEspaco}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          searchResult.innerHTML = "Monstro não encontrado.";
+        } else {
+          searchResult.innerHTML = "";
+          const ul = document.createElement('ul');
+          const nome = document.createElement('li');
+          const tipo = document.createElement('li');
+          const tamanho = document.createElement('li');
+          const idioma = document.createElement('li');
+          const alinhamento = document.createElement('li');
+          nome.innerHTML = `Nome: ${data.name}`;
+          tipo.innerHTML = `Tipo: ${data.type}`;
+          tamanho.innerHTML = `Tamanho: ${data.size}`;
+          idioma.innerHTML = `Idioma: ${data.languages}`;
+          alinhamento.innerHTML = `Alinhamento: ${data.alignment}`;
+          ul.appendChild(nome);
+          ul.appendChild(tipo);
+          ul.appendChild(tamanho);
+          ul.appendChild(idioma);
+          ul.appendChild(alinhamento);
+          searchResult.appendChild(ul);
+        }
+      })
+      .catch((error) => {
+        searchResult.innerHTML = "Ocorreu um erro.";
+      });
+      
+  }
 </script>
