@@ -13,9 +13,6 @@
           <input type="text" id="monsterInput" placeholder="Enter a monster name"/>
           <p></p>
           <button id="searchButton">Search</button>
-          <ul id="suggestions"></ul>
-          <div id="monsterResult" class="monster-result"></div>
-          <ul id="monster_result"></ul>
           <div id="searchResult" class="search-result"></div>
           <ul id="monsterResult"></ul>
         </div>
@@ -26,92 +23,63 @@
 </head>
 </html>
 <script>
-const monsterInput2 = document.getElementById("monsterInput");
-const suggestions = document.getElementById("suggestions");
-
-monsterInput2.addEventListener("input", () => {
-  const monsterName = monsterInput2.value.toLowerCase();
-  if (monsterName) {
-    fetchSuggestions(monsterName);
-  } else {
-    suggestions.innerHTML = ""; // Limpa as sugestões se o campo de entrada estiver vazio
-  }
-});
-
-function fetchSuggestions(monsterName) {
-  fetch("https://www.dnd5eapi.co/api/monsters")
-    .then((res) => res.json())
-    .then((data) => {
-      const filteredMonsters = data.results.filter((monster) =>
-        monster.name.toLowerCase().startsWith(monsterName)
-      );
-      displaySuggestions(filteredMonsters);
-    })
-    .catch((error) => {
-      console.error("Ocorreu um erro:", error);
-    });
-}
-
-function displaySuggestions(monsters) {
-  suggestions.innerHTML = ""; // Limpa as sugestões anteriores
-  monsters.forEach((monster) => {
-    const li = document.createElement("li");
-    li.textContent = monster.name;
-    suggestions.appendChild(li);
-  });
-}
-
-</script>
-<script>
-const monsterInput = document.getElementById("monsterInput");
-const searchButton = document.getElementById("searchButton");
-const monsterResult = document.getElementById("monsterResult");
   const input = document.getElementById('monsterInput');
   const ul = document.querySelector('#monsterResult');
   const p = document.querySelector('p');
-  
+  //Seguinte, pra fazer a busca de monstros, eu fiz uma função que pega os monstros da API e coloca em um array, depois eu fiz uma função que faz a busca dos monstros no array e coloca em uma lista, e por fim, fiz uma função que pega o nome do monstro que o usuário digitou e faz a busca na API, e coloca o nome e o tipo do monstro em uma lista.
   let monsters = [];
 
+  //To fazendo a chamada da API usando o fetch
   fetch("https://www.dnd5eapi.co/api/monsters")
     .then((res) => res.json())
     .then((data) => {
+      //Com a promisse que me retornou, estou criando um novvo array com os nomes dos monstros
       monsters = data.results.map((monster) => monster.name);
       autoComplete(monsters);
     });
 
-
+  //Essa é a função pica das galáxias que faz o autocomplete
   function autoComplete(monsters) {
     input.addEventListener("input", () => {
-
+      // Pega o valor do input e coloca em minúsculo
       const inputValue = input.value.toLowerCase();
 
+      // Limpa a lista de monstros
       while (ul.firstChild) {
         ul.removeChild(ul.firstChild);
       }
 
+      // Se o input estiver vazio, não faz nada
       if (!inputValue) return;
 
+      // Filtra os monstros que começam com o valor do input utilizando a função startsWith
       const autocomplete = monsters.filter((monster) =>
         monster.toLowerCase().startsWith(inputValue)
       );
 
+      //completa a lista de monstros
       autocomplete.forEach((name) => {
         const li = document.createElement('li');
         li.textContent = name;
         ul.appendChild(li);
       });
 
+      // Se a lista de monstros não estiver vazia, exibe a lista
       ul.style.display = 'block';
 
+
+      // Limpa o resultado da busca anterior
       searchResult.innerHTML = "";
     });
 
+    // Se o input perder o foco, esconde a lista, o perder foco é tipo quando clicka em outro canto da tela, ai meio que ele some sabe
     input.addEventListener('blur', () => {
       setTimeout(() => {
         ul.style.display = 'none';
       }, 200);
     });
 
+    // Se clicar em um monstro da lista, coloca o nome do monstro no input e esconde a lista muito foda né
     ul.addEventListener('click', (event) => {
       if (event.target.tagName === 'LI') {
         input.value = event.target.textContent;
@@ -120,10 +88,12 @@ const monsterResult = document.getElementById("monsterResult");
     });
   }
 
+  //Aqui é oq vocês já tinham ai eu preservei
   const monsterInput = document.getElementById("monsterInput");
   const searchButton = document.getElementById("searchButton");
   const searchResult = document.getElementById("searchResult");
 
+  //função normal
   searchButton.addEventListener("click", () => {
     const monsterName = monsterInput.value.toLowerCase();
     if (monsterName) {
@@ -134,47 +104,10 @@ const monsterResult = document.getElementById("monsterResult");
     }
   });
 
-function searchMonster(monsterName) {
-  monsterResult.innerHTML = "Procurando...";
-  fetch(`https://www.dnd5eapi.co/api/monsters/${monsterName}`)
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.error) {
-        monsterResult.innerHTML = "Monstro não encontrado.";
-      } else {
-        const ul = document.querySelector('#monster_result');
-        ul.innerHTML = ""; // Limpa os resultados anteriores
-        monsterResult.innerHTML = ""
-        const imageMonster = document.createElement('img');
-        imageMonster.src = `https://www.dnd5eapi.co/api/images/monsters/${monsterName}.png`; // URL da imagem
-        imageMonster.alt = data.name;
-        imageMonster.classList.add('monster-image');
-        const nome = document.createElement('li');
-        ul.appendChild(imageMonster);
-        const tipo = document.createElement('li');
-        const tamanho = document.createElement('li');
-        const alinhamento = document.createElement('li');
-        const idiomas = document.createElement('li');
-        nome.innerHTML = `Nome: ${data.name}`;
-        tipo.innerHTML = `Tipo: ${data.type}`;
-        tamanho.innerHTML = `Tamanho: ${data.size}`;
-        alinhamento.innerHTML = `Alinhamento: ${data.alignment}`;
-        idiomas.innerHTML = `Idiomas: ${data.languages}`;
-        ul.appendChild(nome);
-        ul.appendChild(tipo); 
-        ul.appendChild(tamanho);
-        ul.appendChild(alinhamento);
-        ul.appendChild(idiomas);
-      }
-    })
-    .catch((error) => {
-      monsterResult.innerHTML = "Ocorreu um erro.";
-    });
-}
-
-
   function searchMonster(monsterName) {
     searchResult.innerHTML = "Procurando...";
+    //Aqui eu tive que criar, por causa que tava enfretando problemas pra nome de monstro composto
+    //Ai qq eu to fazendo, pegando o nome e dando um replace no espaço por um traço, por causa que a API recomenda esse uso
     const monsterNameComEspaco = monsterName.replace(/ /g, "-")
     fetch(`https://www.dnd5eapi.co/api/monsters/${monsterNameComEspaco}`)
       .then((res) => res.json())
@@ -186,25 +119,18 @@ function searchMonster(monsterName) {
           const ul = document.createElement('ul');
           const nome = document.createElement('li');
           const tipo = document.createElement('li');
-          const tamanho = document.createElement('li');
-          const idioma = document.createElement('li');
-          const alinhamento = document.createElement('li');
+          //Aqui eu to pegando o nome e o tipo do monstro e colocando em uma lista, utilizando o spred operator
           nome.innerHTML = `Nome: ${data.name}`;
           tipo.innerHTML = `Tipo: ${data.type}`;
-          tamanho.innerHTML = `Tamanho: ${data.size}`;
-          idioma.innerHTML = `Idioma: ${data.languages}`;
-          alinhamento.innerHTML = `Alinhamento: ${data.alignment}`;
           ul.appendChild(nome);
           ul.appendChild(tipo);
-          ul.appendChild(tamanho);
-          ul.appendChild(idioma);
-          ul.appendChild(alinhamento);
           searchResult.appendChild(ul);
         }
       })
+      //tratamento de erro
       .catch((error) => {
         searchResult.innerHTML = "Ocorreu um erro.";
       });
-      
+      //e fim
   }
 </script>
