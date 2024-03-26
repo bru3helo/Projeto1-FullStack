@@ -11,7 +11,7 @@
         <ul></ul>
         <div class="container">
           <h1>Monster Search</h1>
-          input type="text" id="monsterInput" placeholder="Enter a monster name" />
+          <input type="text" id="monsterInput" placeholder="Enter a monster name" />
           <button id="searchButton">Search</button>
           <div id="monsterResult" class="monster-result"></div>
           <ul id="monster_result"></ul>
@@ -63,14 +63,25 @@ function searchMonster(monsterName) {
         const ul = document.querySelector('#monster_result');
         const nome = document.createElement('li');
         const tipo = document.createElement('li');
+        const tamanho = document.createElement('li');
+        const alinhamento = document.createElement('li');
+        const idiomas = document.createElement('li');
         nome.innerHTML = `Nome: ${data.name}`;
         tipo.innerHTML = `Tipo: ${data.type}`;
+        tamanho.innerHTML = `Tamanho: ${data.size}`;
+        alinhamento.innerHTML = `Alinhamento: ${data.alignment}`;
+        idiomas.innerHTML = `Idiomas: ${data.languages}`;
         ul.appendChild(nome);
-        ul.appendChild(tipo);
+        ul.appendChild(tipo); 
+        ul.appendChild(tamanho);
+        ul.appendChild(alinhamento);
+        ul.appendChild(idiomas);
       }
     })
     .catch((error) => {
       monsterResult.innerHTML = "Ocorreu um erro.";
     });
-} 
+
+}
+
 </script>
