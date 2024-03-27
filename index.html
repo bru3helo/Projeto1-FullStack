@@ -120,11 +120,20 @@
           const ul = document.createElement('ul');
           const nome = document.createElement('li');
           const tipo = document.createElement('li');
+          const tamanho = document.createElement('li');
+          const idioma = document.createElement('li');
+          const alinhamento = document.createElement('li');
           nome.innerHTML = `Nome: ${data.name}`;
           tipo.innerHTML = `Tipo: ${data.type}`;
+          tamanho.innerHTML = `Tamanho: ${data.size}`;
+          idioma.innerHTML = `Idioma: ${data.languages}`;
+          alinhamento.innerHTML = `Alinhamento: ${data.alignment}`;
           ul.appendChild(imageMonster);
           ul.appendChild(nome);
           ul.appendChild(tipo);
+          ul.appendChild(tamanho);
+          ul.appendChild(idioma);
+          ul.appendChild(alinhamento);
           searchResult.appendChild(ul);
 
           
